@@ -1,4 +1,4 @@
-Requisitos Prévios 
+# 0 - Requisitos Prévios #
 
 - Oracle Linux 8 (x86_64) 
 
@@ -12,9 +12,7 @@ Requisitos Prévios
 
  
 
-Passo 1: Instalar dependências 
-
- 
+# 1 - Instalar dependências # 
 
 Pacotes Adicionais para Enterprise Linux (ou EPEL) é um grupo especial do Fedora com interesse em criar, manter e gerenciar um conjunto de pacotes adicionais com alta qualidade para o Enterprise Linux, incluindo, mas não se limitando a, Red Hat Enterprise Linux (RHEL), CentOS e Scientific Linux (SL), o Oracle Linux (OL). 
 
@@ -43,9 +41,8 @@ Iniciar serviço MariaDB: sudo systemctl start mariadb
 Habilitar apache no boot: sudo systemctl enable mariadb.service 
 
 
-# 4 - Criar banco de dados e usuário # 
+# 2 - Criar banco de dados e usuário # 
 
- 
 mysql_secure_installation 
  
 
@@ -60,33 +57,28 @@ GRANT ALL PRIVILEGES ON ocsweb.* TO 'host'@'localhost'  IDENTIFIED BY 'senha';
 FLUSH PRIVILEGES; 
 
  
-#Passo 5: Baixar e instalar o OCS Inventory# 
-
+# 3 - Baixar e instalar o OCS Inventory # 
 
 wget https://github.com/OCSInventory-NG/OCSInventory-ocsreports/releases/download/2.12.3/OCSNG_UNIX_SERVER-2.12.3.tar.gz  
-
- 
 
 tar -xvzf OCSNG_UNIX_SERVER-2.12.3.tar.gz 
 
 cd OCSNG_UNIX_SERVER-2.12.3/ 
 
+perl Makefile.PL 
+
+make 
+
+make install 
  
-Passo 6: Configurar o OCS Inventory 
+# 4 - Configurar o OCS Inventory e inicializar o serviço #
 
- 
+ocsinventory-setup --database-driver DBI::mysql --database-host localhost --database-name ocs --database-user ocs --database-password senha 
 
-sudo ocsinventory-setup --database-driver DBI::mysql --database-host localhost --database-name ocs --database-user ocs --database-password senha 
-
- 
-
-Passo 7: Iniciar o serviço 
+systemctl start ocsinventory-server && sudo systemctl enable ocsinventory-server 
 
 
-sudo systemctl start ocsinventory-server && sudo systemctl enable ocsinventory-server 
-
-
-Passo 8: Acessar o painel 
+# 5 -  Acessar o painel #
  
 - URL: http://<ip-do-servidor>/ocsreports 
 
